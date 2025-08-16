@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "20-20-20 Eye Care Reminder",
+  "version": "1.1",
+  "description": "Reminds you to follow the 20-20-20 rule with a background timer.",
+  "permissions": ["storage", "alarms"],   // thêm "alarms" vào đây
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "20-20-20 Eye Care Reminder",
+    "default_icon": "icon.png"
+  },
+  "icons": {
+    "128": "icon.png"
+  }
+}

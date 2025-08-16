@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>20-20-20 Eye Care Reminder</title>
+  <link rel="stylesheet" href="popup.css" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    .icon-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Power (X) */
+    .power-btn {
+      font-size: 32px;
+      width: 44px;
+      height: 44px;
+    }
+    /* Reset & Dark/Light */
+    .control-btn {
+      font-size: 28px;
+      width: 42px;
+      height: 42px;
+    }
+    /* Pause bigger */
+    .pause-btn {
+      font-size: 40px;
+      width: 56px;
+      height: 56px;
+      position: relative;
+      top: 2px; /* slight lift */
+    }
+    .icon-btn:hover {
+      opacity: 0.8;
+      transform: scale(1.1);
+    }
+    .btn-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 28px;
+      margin-top: -18px;
+    }
+    .circle-timer {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .countdown {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+
+  <div class="container">
+    <h2>20-20-20 Reminder</h2>
+
+    <!-- Countdown circle -->
+    <div class="circle-timer">
+      <svg class="progress-ring" width="160" height="160">
+        <circle class="progress-ring__bg" cx="80" cy="80" r="72" />
+        <circle id="progressCircle" class="progress-ring__circle" cx="80" cy="80" r="72" />
+      </svg>
+      <div id="countdown" class="countdown">20:00</div>
+    </div>
+
+    <!-- Media Control Bar -->
+    <div class="btn-row">
+      <!-- Power -->
+      <button id="powerBtn" class="icon-btn power-btn" title="Enable/Disable">✖</button>
+
+      <!-- Reset -->
+      <button id="resetBtn" class="icon-btn control-btn" title="Reset">
+        <i class="fa-solid fa-rotate-left"></i>
+      </button>
+
+      <!-- Pause -->
+      <button id="pauseBtn" class="icon-btn pause-btn" title="Pause/Play">
+        <i id="pauseIcon" class="fa-solid fa-pause"></i>
+      </button>
+
+      <!-- Dark/Light -->
+      <button id="settingBtn" class="icon-btn control-btn" title="Dark/Light">
+        <i class="fa-regular fa-sun"></i>
+      </button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
