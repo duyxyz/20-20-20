@@ -1,48 +1,43 @@
-let totalSeconds = 20 * 60;
-let remainingSeconds = totalSeconds;
-let isPaused = false;
-let powerOn = true;
+const INTERVAL_MINUTES = 20;
 
-// Khởi tạo alarm tick mỗi giây
+function createNotification() {
+  chrome.notifications.create({
+    type: "basic",
+    iconUrl: "icon.png",
+    title: "Take an eye break!",
+    message: "Look at something 20 feet away for at least 20 seconds to protect your eyes.",
+    priority: 2,
+  });
+}
+
+function setAlarm() {
+  chrome.alarms.create("eyeCareAlarm", { periodInMinutes: INTERVAL_MINUTES });
+  const nextTime = Date.now() + INTERVAL_MINUTES * 60 * 1000;
+  chrome.storage.local.set({ nextAlarmTime: nextTime });
+}
+
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.alarms.create("timerTick", { periodInMinutes: 1 / 60 }); // 1 giây
-  chrome.storage.local.set({ remainingSeconds, isPaused, powerOn });
+  setAlarm();
 });
 
-// Alarm handler
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === "timerTick") {
-    if (powerOn && !isPaused) {
-      if (remainingSeconds > 0) {
-        remainingSeconds--;
-      } else {
-        // HẾT GIỜ → gửi thông báo sang popup
-        chrome.runtime.sendMessage({ action: "timeUp" });
-        remainingSeconds = totalSeconds;
-      }
-    }
-    chrome.storage.local.set({ remainingSeconds, isPaused, powerOn });
+  if (alarm.name === "eyeCareAlarm") {
+    createNotification();
+    setAlarm();
   }
 });
 
-// Nhận điều khiển từ popup
-chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
-  if (req.action === "pause") {
-    isPaused = req.value;
+chrome.storage.sync.get("enabled", (data) => {
+  if (data.enabled === false) {
+    chrome.alarms.clear("eyeCareAlarm");
+    chrome.storage.local.remove("nextAlarmTime");
+  } else {
+    setAlarm();
   }
-  if (req.action === "reset") {
-    remainingSeconds = totalSeconds;
-    isPaused = false;
+});
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "setAlarm") {
+    setAlarm();
   }
-  if (req.action === "power") {
-    powerOn = req.value;
-    if (!powerOn) {
-      remainingSeconds = 0;
-    } else {
-      remainingSeconds = totalSeconds;
-      isPaused = false;
-    }
-  }
-  chrome.storage.local.set({ remainingSeconds, isPaused, powerOn });
-  sendResponse({ ok: true });
 });

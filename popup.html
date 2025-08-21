@@ -4,102 +4,205 @@
   <meta charset="UTF-8" />
   <title>20-20-20 Eye Care Reminder</title>
   <link rel="stylesheet" href="popup.css" />
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
-    .icon-btn {
-      background: none;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      color: inherit;
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: #f9fafb;
+      color: #333;
+      width: 280px;
+      padding: 16px;
+      box-sizing: border-box;
+      text-align: center;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark-mode {
+      background: #121212;
+      color: #eee;
+    }
+    body.dark-mode h2 { color: #90caf9; }
+    body.dark-mode .countdown { color: #90caf9; }
+    body.dark-mode .progress-container { background: #333; }
+    body.dark-mode .progress-bar { background: #90caf9; }
+    body.dark-mode footer { color: #aaa; }
+
+    .header {
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
     }
-    /* Power (X) */
-    .power-btn {
-      font-size: 32px;
-      width: 44px;
-      height: 44px;
+    .header img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%; 
     }
-    /* Reset & Dark/Light */
-    .control-btn {
-      font-size: 28px;
-      width: 42px;
-      height: 42px;
+    .header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a73e8;
     }
-    /* Pause bigger */
-    .pause-btn {
-      font-size: 40px;
-      width: 56px;
-      height: 56px;
-      position: relative;
-      top: 2px; /* slight lift */
-    }
-    .icon-btn:hover {
-      opacity: 0.8;
-      transform: scale(1.1);
-    }
-    .btn-row {
+
+    .controls {
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: center;
-      gap: 28px;
-      margin-top: -18px;
+      gap: 12px;
+      margin-bottom: 10px;
     }
-    .circle-timer {
-      width: 160px;
-      height: 160px;
-      margin: 0 auto;
-      position: relative;
+
+    .btn-circle {
+      background-color: #bbb;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: background-color 0.25s ease;
+      color: white;
     }
+    .btn-circle:hover { background-color: #888; }
+    body.dark-mode .btn-circle { background-color: #444; color: #eee; }
+    body.dark-mode .btn-circle:hover { background-color: #666; }
+    .btn-circle svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+    }
+
     .countdown {
+      font-weight: 600;
+      font-size: 15px;
+      color: #1a73e8;
+      margin: 6px 0;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 6px 0 12px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #1a73e8;
+      transition: width 0.5s linear;
+    }
+
+    footer {
+      font-size: 12px;
+      color: #888;
+    }
+
+    /* === Toggle Skewed (Shoh2008) === */
+    .checkbox-wrapper-8 .tgl {
+      display: none;
+    }
+    .checkbox-wrapper-8 .tgl,
+    .checkbox-wrapper-8 .tgl:after,
+    .checkbox-wrapper-8 .tgl:before,
+    .checkbox-wrapper-8 .tgl *,
+    .checkbox-wrapper-8 .tgl *:after,
+    .checkbox-wrapper-8 .tgl *:before,
+    .checkbox-wrapper-8 .tgl + .tgl-btn {
+      box-sizing: border-box;
+    }
+    .checkbox-wrapper-8 .tgl + .tgl-btn {
+      outline: 0;
+      display: block;
+      width: 4em;
+      height: 2em;
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+      background: #888;
+      overflow: hidden;
+      transform: skew(-10deg);
+      transition: all 0.2s ease;
+      font-family: sans-serif;
+    }
+    .checkbox-wrapper-8 .tgl + .tgl-btn:after,
+    .checkbox-wrapper-8 .tgl + .tgl-btn:before {
+      transform: skew(10deg);
+      display: inline-block;
+      transition: all 0.2s ease;
+      width: 100%;
+      text-align: center;
       position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 24px;
+      line-height: 2em;
       font-weight: bold;
+      color: #fff;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+    }
+    .checkbox-wrapper-8 .tgl + .tgl-btn:after {
+      left: 100%;
+      content: attr(data-tg-on);
+    }
+    .checkbox-wrapper-8 .tgl + .tgl-btn:before {
+      left: 0;
+      content: attr(data-tg-off);
+    }
+    .checkbox-wrapper-8 .tgl:checked + .tgl-btn {
+      background: #1a73e8;
+    }
+    .checkbox-wrapper-8 .tgl:checked + .tgl-btn:before {
+      left: -100%;
+    }
+    .checkbox-wrapper-8 .tgl:checked + .tgl-btn:after {
+      left: 0;
     }
   </style>
 </head>
 <body>
-  <canvas id="stars"></canvas>
-
-  <div class="container">
+  <!-- Header -->
+  <div class="header">
+    <img src="https://avatars.githubusercontent.com/u/217141310?s=400&u=0a8c2c785b31a77a792f438339a32f0d3b267366&v=4" alt="Avatar" />
     <h2>20-20-20 Reminder</h2>
-
-    <!-- Countdown circle -->
-    <div class="circle-timer">
-      <svg class="progress-ring" width="160" height="160">
-        <circle class="progress-ring__bg" cx="80" cy="80" r="72" />
-        <circle id="progressCircle" class="progress-ring__circle" cx="80" cy="80" r="72" />
-      </svg>
-      <div id="countdown" class="countdown">20:00</div>
-    </div>
-
-    <!-- Media Control Bar -->
-    <div class="btn-row">
-      <!-- Power -->
-      <button id="powerBtn" class="icon-btn power-btn" title="Enable/Disable">✖</button>
-
-      <!-- Reset -->
-      <button id="resetBtn" class="icon-btn control-btn" title="Reset">
-        <i class="fa-solid fa-rotate-left"></i>
-      </button>
-
-      <!-- Pause -->
-      <button id="pauseBtn" class="icon-btn pause-btn" title="Pause/Play">
-        <i id="pauseIcon" class="fa-solid fa-pause"></i>
-      </button>
-
-      <!-- Dark/Light -->
-      <button id="settingBtn" class="icon-btn control-btn" title="Dark/Light">
-        <i class="fa-regular fa-sun"></i>
-      </button>
-    </div>
   </div>
 
+  <!-- Controls row (toggle + reset + settings) -->
+  <div class="controls">
+    <!-- New skewed toggle -->
+    <div class="checkbox-wrapper-8">
+      <input type="checkbox" id="enableCheckbox" class="tgl tgl-skewed">
+      <label for="enableCheckbox" data-tg-on="ON" data-tg-off="OFF" class="tgl-btn"></label>
+    </div>
+
+    <button id="resetBtn" class="btn-circle" title="Reset Timer">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="1 4 1 10 7 10"></polyline>
+        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+      </svg>
+    </button>
+
+    <button id="settingsBtn" class="btn-circle" title="Toggle Dark/Light Mode">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15 a1.65 1.65 0 0 0 .33 1.82 l.06 .06 a2 2 0 1 1 -2.83 2.83 l-.06 -.06 a1.65 1.65 0 0 0 -1.82 -.33 1.65 1.65 0 0 0 -1 1.51 V21 a2 2 0 1 1 -4 0 v-.09 a1.65 1.65 0 0 0 -1 -1.51 1.65 1.65 0 0 0 -1.82 .33 l-.06 .06 a2 2 0 1 1 -2.83 -2.83 l.06 -.06 a1.65 1.65 0 0 0 .33 -1.82 1.65 1.65 0 0 0 -1.51 -1 H3 a2 2 0 1 1 0 -4 h.09 c.7 0 1.31 -.4 1.51 -1 a1.65 1.65 0 0 0 -.33 -1.82 l-.06 -.06 a2 2 0 1 1 2.83 -2.83 l.06 .06 c.51 .51 1.22 .67 1.82 .33 h.01 c.6 -.34 .97 -.98 .97 -1.68 V3 a2 2 0 1 1 4 0 v.09 c0 .7 .37 1.34 .97 1.68 h.01 c.6 .34 1.31 .18 1.82 -.33 l.06 -.06 a2 2 0 1 1 2.83 2.83 l-.06 .06 c-.51 .51 -.67 1.22 -.33 1.82 .34 .6 .98 .97 1.68 .97 H21 a2 2 0 1 1 0 4 h-.09 c-.7 0 -1.34 .37 -1.68 .97 z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Countdown and progress -->
+  <div id="countdown" class="countdown">Loading...</div>
+  <div class="progress-container">
+    <div id="progressBar" class="progress-bar"></div>
+  </div>
+
+  <footer>
+    Every 20 minutes, look 20ft away for 20s 
+  </footer>
+
   <script src="popup.js"></script>
+  <script src="theme.js"></script>
 </body>
 </html>
